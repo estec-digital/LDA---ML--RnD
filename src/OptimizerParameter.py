@@ -1,6 +1,6 @@
 import pickle
 import numpy as np
-from datetime import datetime
+from datetime import datetime, time, timedelta
 from geneticalgorithm2 import geneticalgorithm2 as ga
 import json
 
@@ -36,6 +36,20 @@ def objective_function(X):
     target = loaded_model.predict(input)
     target = target.item()
     return target
+
+def target_times_function():
+    base_times = [time(6,0), time(14,0), time(22,0)]
+    # Tạo danh sách target_times ±1 phút
+    target_times = []
+    for t in base_times:
+        for minute_offset in [0, 1, 2, 3, 4, 5]:  # 0 = đúng giờ, 1 = thêm 1 phút
+            new_hour = t.hour
+            new_minute = t.minute + minute_offset
+            if new_minute >= 60:
+                new_minute -= 60
+                new_hour = (new_hour + 1) % 24
+            target_times.append(f"{new_hour:02d}:{new_minute:02d}:00")
+    return target_times
 
 def LN_OptimizerParameter(PG_cursor, PG_conn, model_LN_OptimizerParameter_Stage1, model_LN_OptimizerParameter_Stage2, model_LN_OptimizerParameter_COConsumption):
     try:
@@ -258,7 +272,7 @@ def LH2_OptimizerParameter(PG_cursor, PG_conn, model_LH2_OptimizerParameter):
             upper_bound = min(upper_bound, param_max[i])
 
             if lower_bound >= upper_bound:
-                lower_bound, upper_bound = upper_bound, lower_bound
+                lower_bound, upper_bound = param_min[i], param_max[i]
 
             param_bounds.append([lower_bound, upper_bound])
 
@@ -297,7 +311,8 @@ def LH2_OptimizerParameter(PG_cursor, PG_conn, model_LH2_OptimizerParameter):
         PG_cursor.execute(query_CoalConsumption)
         OptimizerParameter_CoalConsumption = PG_cursor.fetchone()
         OptimizerParameter_CoalConsumption = [float(value) for value in OptimizerParameter_CoalConsumption[1:]]
-        target_times = ["06:00:00", "14:00:00", "22:00:00","06:01:00", "14:01:00", "22:01:00"]
+        # target_times = ["06:00:00", "14:00:00", "22:00:00","06:01:00", "14:01:00", "22:01:00"]
+        target_times = target_times_function()
         cron_datetime = crontime[0]
             # Điều kiện Reset bộ thông số vào lúc giao ca 6h 14h 22h hoặc Công suất chênh lệch 5 tấn/h
         if DCS_Items[0] == 0:
@@ -470,7 +485,7 @@ def LH1_OptimizerParameter(PG_cursor, PG_conn, model_LH1_OptimizerParameter):
             upper_bound = min(upper_bound, param_max[i])
 
             if lower_bound >= upper_bound:
-                lower_bound, upper_bound = upper_bound, lower_bound
+                lower_bound, upper_bound = param_min[i], param_max[i]
 
             param_bounds.append([lower_bound, upper_bound])
 
@@ -507,7 +522,8 @@ def LH1_OptimizerParameter(PG_cursor, PG_conn, model_LH1_OptimizerParameter):
         PG_cursor.execute(query_CoalConsumption)
         OptimizerParameter_CoalConsumption = PG_cursor.fetchone()
         OptimizerParameter_CoalConsumption = [float(value) for value in OptimizerParameter_CoalConsumption[1:]]
-        target_times = ["06:00:00", "14:00:00", "22:00:00","06:01:00", "14:01:00", "22:01:00"]
+        # target_times = ["06:00:00", "14:00:00", "22:00:00","06:01:00", "14:01:00", "22:01:00"]
+        target_times = target_times_function()
         cron_datetime = crontime[0]
         if DCS_Items[0] == 0:
             query_DCS = '''

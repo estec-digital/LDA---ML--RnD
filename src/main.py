@@ -51,8 +51,8 @@ XHQ_cursor = XHQ_conn.cursor()
         # Global: RandomForestRegression Models
 path_LH1_OptimizerParameter = 'D:/001.Project/LDA_master/models/LH1_Step1_0703.sav'
 path_LH1_GenerateParameter = 'D:/001.Project/LDA_master/models/LH1_Step1_0703.sav'
-# path_LH1_CoalConsumption = 'D:/001.Project/LDA_master/models/LH_Step2.sav'
-path_LH1_CoalConsumption = 'D:/001.Project/LDA_master/autotrain/best/LH_modelOptimizerParameter_CoalConsumption_best.sav'
+path_LH1_CoalConsumption = 'D:/001.Project/LDA_master/models/LH_Step2.sav'
+# path_LH1_CoalConsumption = 'D:/001.Project/LDA_master/autotrain/best/LH_modelOptimizerParameter_CoalConsumption_best.sav'
 
         # Local: KNN Models (k=1 is nearest values)
 # path_LH1_HistoryParameter = 'D:/001.Project/LDA_master/models/LH_modelHistoryParameter_2025.sav'
@@ -73,8 +73,8 @@ path_LH2_OptimizerParameter = 'D:/001.Project/LDA_master/models/LH2_Step1_0703.s
 # path_LH2_OptimizerParameter = 'D:/001.Project/LDA_master/autotrain/best/LH2_Optimizer_best.sav'
 path_LH2_GenerateParameter = 'D:/001.Project/LDA_master/models/LH2_Step1_0703.sav'
 # path_LH2_GenerateParameter = 'D:/001.Project/LDA_master/autotrain/best/LH2_Optimizer_best.sav'
-# path_LH2_CoalConsumption = 'D:/001.Project/LDA_master/models/LH_Step2.sav'
-path_LH2_CoalConsumption = 'D:/001.Project/LDA_master/autotrain/best/LH_modelOptimizerParameter_CoalConsumption_best.sav'
+path_LH2_CoalConsumption = 'D:/001.Project/LDA_master/models/LH_Step2.sav'
+# path_LH2_CoalConsumption = 'D:/001.Project/LDA_master/autotrain/best/LH_modelOptimizerParameter_CoalConsumption_best.sav'
         # Local: KNN Models (k=1 is nearest values)
 path_LH2_HistoryParameter = 'D:/001.Project/LDA_master/models/LH2_knn_model_0703.sav'
 # path_LH2_HistoryParameter = 'D:/001.Project/LDA_master/autotrain/best/LH2_History_best.sav'

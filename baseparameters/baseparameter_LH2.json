@@ -495,8 +495,8 @@
         {
             "tag": "B2_S051AIT_DACA_PV__Value",
             "desc": "Dòng điện làm việc quạt cấp 1 (A)",
-            "min": 56.83627,
-            "max": 57.96484
+            "min": 57.83627,
+            "max": 58.96484
         },
         {
             "tag": "B2_AZ1011ZT_DACA_PV__Value",
@@ -513,8 +513,8 @@
         {
             "tag": "B2_S052AVFD_CRT_DACA_PV__Value",
             "desc": "Dòng điện làm việc quạt gió cấp 2 (S052aVFD)",
-            "min": 22.12326,
-            "max": 22.128
+            "min": 23.12326,
+            "max": 23.128
         },
         {
             "tag": "B2_S052AVFD_FB_DACA_PV__Value",
@@ -635,8 +635,8 @@
         {
             "tag": "B2_S051AIT_DACA_PV__Value",
             "desc": "Dòng điện làm việc quạt cấp 1 (A)",
-            "min": 56.97984,
-            "max": 58.42562
+            "min": 57.97984,
+            "max": 59.42562
         },
         {
             "tag": "B2_AZ1011ZT_DACA_PV__Value",
@@ -653,8 +653,8 @@
         {
             "tag": "B2_S052AVFD_CRT_DACA_PV__Value",
             "desc": "Dòng điện làm việc quạt gió cấp 2 (S052aVFD)",
-            "min": 22.12484,
-            "max": 22.8123
+            "min": 23.12484,
+            "max": 23.8123
         },
         {
             "tag": "B2_S052AVFD_FB_DACA_PV__Value",
