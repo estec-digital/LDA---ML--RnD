@@ -302,7 +302,7 @@ def LH2_OptimizerParameter(PG_cursor, PG_conn, model_LH2_OptimizerParameter):
         best_solution = model.result['variable']
         best_fitness = model.result['score']
         # print(f"Best Parameters: {best_solution}")
-        # print(f"Best Fitness: {best_fitness}")
+        print(f"Best Fitness: {best_fitness}")
 
         # Giai đoạn 8: Kiểm tra xem tiêu hao đó có phải tốt nhất chưa. Nếu thấp hơn thì sẽ lấy bộ thông số đó, không thì sẽ lấy bộ thông số cũ
         query_CoalConsumption = '''
@@ -515,7 +515,7 @@ def LH1_OptimizerParameter(PG_cursor, PG_conn, model_LH1_OptimizerParameter):
         best_solution = model.result['variable']
         best_fitness = model.result['score']
         # print(f"Best Parameters: {best_solution}")
-        # print(f"Best Fitness: {best_fitness}")
+        print(f"Best Fitness: {best_fitness}")
 
         # Giai đoạn 8: Kiểm tra xem tiêu hao đó có phải tốt nhất chưa.
         query_CoalConsumption = '''SELECT * FROM "DATA_LH1_OptimizerParameter" ORDER BY "CronTime" DESC LIMIT 1'''

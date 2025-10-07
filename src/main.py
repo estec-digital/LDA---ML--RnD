@@ -9,6 +9,7 @@ from GenerateParameter import LH1_GenerateParameter, LH2_GenerateParameter, LN_G
 from ModelEvaluation import LH1_Evaluation, LH2_Evaluation, LN_Evaluation
 from ErrorWarning import LN_ErrorWarning
 from AutoRetrainingModels import LH1_AutoRetrainingModel, LH2_AutoRetrainingModel, LN_AutoRetrainingModel
+from EPortal_OptimizerParameter import LN_EPortal
 from Forecasting import *
 import time
 import pyodbc
@@ -51,7 +52,8 @@ XHQ_cursor = XHQ_conn.cursor()
         # Global: RandomForestRegression Models
 path_LH1_OptimizerParameter = 'D:/001.Project/LDA_master/models/LH1_Step1_0703.sav'
 path_LH1_GenerateParameter = 'D:/001.Project/LDA_master/models/LH1_Step1_0703.sav'
-path_LH1_CoalConsumption = 'D:/001.Project/LDA_master/models/LH_Step2.sav'
+# path_LH1_CoalConsumption = 'D:/001.Project/LDA_master/models/LH_Step2.sav'
+path_LH1_CoalConsumption = 'D:/001.Project/LDA_master/models/LH1_RandomForestRegressor.sav'
 # path_LH1_CoalConsumption = 'D:/001.Project/LDA_master/autotrain/best/LH_modelOptimizerParameter_CoalConsumption_best.sav'
 
         # Local: KNN Models (k=1 is nearest values)
@@ -105,8 +107,16 @@ model_LN_OptimizerParameter_Stage1 = load_model(path_LN_modelOptimizerParameter_
 model_LN_OptimizerParameter_Stage2 = load_model(path_LN_modelOptimizerParameter_Stage2)
 model_LN_OptimizerParameter_COconsumption = load_model(path_LN_modelOptimizerParameter_COconsumption)
 
+path_LN_EPortal = 'D:/001.Project/LDA_master/models/LoNung.sav'
+model_LN_EPortal = load_model(path_LN_EPortal)
+
 def backup_database():
     os.system("docker-compose -f D:/001.Project/LDA_master/docker-compose.yaml exec postgres pg_dump -U LDA LDA > D:/001.Project/LDA_master/backup/database/backup.sql")
+
+from concurrent.futures import ThreadPoolExecutor
+executor = ThreadPoolExecutor(max_workers=10)  # max 10 job đồng thời
+def run_threaded(job_func):
+    executor.submit(job_func)
 
 schedule.every(1).minutes.do(lambda: getdataXHQ_DATA_CTCN(PG_cursor, XHQ_cursor,PG_conn))
 schedule.every(1).minutes.do(lambda: getdataXHQ_DCS_Items(PG_cursor, XHQ_cursor,PG_conn))
@@ -128,10 +138,14 @@ schedule.every(1).minutes.do(lambda: LH2_Forecasting(PG_cursor, PG_conn, model_L
 
 schedule.every(1).minutes.do(lambda: LN_Forecasting(PG_cursor, PG_conn, model_LN_Forecasting))
 
+# schedule.every(1).minutes.do(lambda: LN_EPortal(PG_cursor, PG_conn, model_LN_EPortal))
+schedule.every(1).minutes.do(lambda: run_threaded(lambda: LN_EPortal(PG_cursor, PG_conn, model_LN_EPortal)))
+
 schedule.every().day.at("00:01").do(lambda: LH1_AutoRetrainingModel(PG_cursor))
 schedule.every().day.at("00:01").do(lambda: LH2_AutoRetrainingModel(PG_cursor))
 schedule.every().day.at("00:01").do(lambda: LN_AutoRetrainingModel(PG_cursor))
 schedule.every().day.at("00:01").do(backup_database)
+
 # Function to run the scheduler
 def run_scheduler():
     while True:
@@ -265,5 +279,9 @@ def GenAI():
     best_solution, best_fitness = GA()
     return best_fitness
 
+@app.post("/Test")
+def Test():
+    LN_EPortal(PG_cursor, PG_conn, model_LN_EPortal)
+    return None
 if __name__ == "__main__":
     uvicorn.run(app, host="192.168.1.92", port=8000)

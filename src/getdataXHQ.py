@@ -46,7 +46,6 @@ def getdataXHQ_DCS_Items(PG_cursor, XHQ_cursor, PG_conn):
         # Lấy tên cột từ bảng DCS_Items trong PostgreSQL
         PG_cursor.execute('SELECT * FROM "DCS_Items" LIMIT 1')
         column_DCS_Items = [desc[0] for desc in PG_cursor.description]
-
         values = []
         for column in column_DCS_Items:
             # Chuẩn hóa tên cột
