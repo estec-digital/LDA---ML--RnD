@@ -113,10 +113,10 @@ model_LN_EPortal = load_model(path_LN_EPortal)
 def backup_database():
     os.system("docker-compose -f D:/001.Project/LDA_master/docker-compose.yaml exec postgres pg_dump -U LDA LDA > D:/001.Project/LDA_master/backup/database/backup.sql")
 
-from concurrent.futures import ThreadPoolExecutor
-executor = ThreadPoolExecutor(max_workers=10)  # max 10 job đồng thời
-def run_threaded(job_func):
-    executor.submit(job_func)
+# from concurrent.futures import ThreadPoolExecutor
+# executor = ThreadPoolExecutor(max_workers=10)  # max 10 job đồng thời
+# def run_threaded(job_func):
+#     executor.submit(job_func)
 
 schedule.every(1).minutes.do(lambda: getdataXHQ_DATA_CTCN(PG_cursor, XHQ_cursor,PG_conn))
 schedule.every(1).minutes.do(lambda: getdataXHQ_DCS_Items(PG_cursor, XHQ_cursor,PG_conn))
@@ -138,8 +138,8 @@ schedule.every(1).minutes.do(lambda: LH2_Forecasting(PG_cursor, PG_conn, model_L
 
 schedule.every(1).minutes.do(lambda: LN_Forecasting(PG_cursor, PG_conn, model_LN_Forecasting))
 
-# schedule.every(1).minutes.do(lambda: LN_EPortal(PG_cursor, PG_conn, model_LN_EPortal))
-schedule.every(1).minutes.do(lambda: run_threaded(lambda: LN_EPortal(PG_cursor, PG_conn, model_LN_EPortal)))
+schedule.every(1).minutes.do(lambda: LN_EPortal(PG_cursor, PG_conn, model_LN_EPortal))
+# schedule.every(1).minutes.do(lambda: run_threaded(lambda: LN_EPortal(PG_cursor, PG_conn, model_LN_EPortal)))
 
 schedule.every().day.at("00:01").do(lambda: LH1_AutoRetrainingModel(PG_cursor))
 schedule.every().day.at("00:01").do(lambda: LH2_AutoRetrainingModel(PG_cursor))
