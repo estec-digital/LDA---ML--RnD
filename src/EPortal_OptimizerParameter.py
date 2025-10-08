@@ -1,7 +1,7 @@
 import numpy as np
 from datetime import datetime, timedelta
 
-def LN_EPortal(PG_cursor, PG_conn, model_LN_EPortal):
+def LN_EPortal(PG_cursor, PG_conn, model_LN_EPortal, model_LN_EPortal_COconsumption):
     # try:
         query_crontime = '''
             SELECT 
@@ -44,7 +44,7 @@ def LN_EPortal(PG_cursor, PG_conn, model_LN_EPortal):
         # print(DCS_Items)
 
         # Giảm giá trị CM_A181_TIEUHAOCO_OUT__Value xuống 95%
-        DCS_Items[-1] = DCS_Items[-1] * 0.95
+        DCS_Items[-1] = DCS_Items[-1] * 0.99
 
         # Create input:
         input = DATA_CTCN + DCS_Items
@@ -66,9 +66,13 @@ def LN_EPortal(PG_cursor, PG_conn, model_LN_EPortal):
         # Tạo chuỗi cột và placeholders cho câu lệnh INSERT
         placeholders = ', '.join(['%s'] * len(name_columns))
         columns = ', '.join([f'"{col}"' for col in name_columns])
-
         crontime = (crontime + timedelta(minutes=5)).strftime('%Y-%m-%d %H:%M:00')
-        values = [crontime] + [float(x) for x in input[0][:-1]] + [float(x) for x in pred_LN_EPortal[0]] + [float(input[0][-1])* 0.95]
+
+        input_COconsumption = np.hstack((input[:, :-1], pred_LN_EPortal))
+        COconsumption = model_LN_EPortal_COconsumption.predict(input_COconsumption)
+        print("COconsumption:", COconsumption)
+
+        values = [crontime] + [float(x) for x in input[0][:-1]] + [float(x) for x in pred_LN_EPortal[0]] + [float(COconsumption[0])]
         print(values)
         insert_query = f'''
             INSERT INTO "DATA_LN_EPortal" ({columns}) VALUES ({placeholders})

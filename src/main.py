@@ -19,6 +19,7 @@ import threading
 import warnings
 from pydantic import BaseModel
 from GA2 import *
+from Forecasting_ARORSL import *
 
 warnings.filterwarnings("ignore", message=".*does not have valid feature names.*")
 
@@ -108,7 +109,10 @@ model_LN_OptimizerParameter_Stage2 = load_model(path_LN_modelOptimizerParameter_
 model_LN_OptimizerParameter_COconsumption = load_model(path_LN_modelOptimizerParameter_COconsumption)
 
 path_LN_EPortal = 'D:/001.Project/LDA_master/models/LoNung.sav'
+path_LN_EPortal_COconsumption = 'D:/001.Project/LDA_master/models/LoNung_tieuhao.sav'
 model_LN_EPortal = load_model(path_LN_EPortal)
+model_LN_EPortal_COconsumption = load_model(path_LN_EPortal_COconsumption)
+
 
 def backup_database():
     os.system("docker-compose -f D:/001.Project/LDA_master/docker-compose.yaml exec postgres pg_dump -U LDA LDA > D:/001.Project/LDA_master/backup/database/backup.sql")
@@ -136,9 +140,9 @@ schedule.every(1).minutes.do(lambda: LH2_Evaluation(PG_cursor, PG_conn))
 schedule.every(1).minutes.do(lambda: LH1_Forecasting(PG_cursor, PG_conn, model_LH_Forecasting))
 schedule.every(1).minutes.do(lambda: LH2_Forecasting(PG_cursor, PG_conn, model_LH_Forecasting))
 
-schedule.every(1).minutes.do(lambda: LN_Forecasting(PG_cursor, PG_conn, model_LN_Forecasting))
-
-schedule.every(1).minutes.do(lambda: LN_EPortal(PG_cursor, PG_conn, model_LN_EPortal))
+# schedule.every(1).minutes.do(lambda: LN_Forecasting(PG_cursor, PG_conn, model_LN_Forecasting))
+schedule.every(1).minutes.do(lambda: LN_Forecasting_ARORSL(PG_cursor, PG_conn, model_dir="../models_rls"))
+schedule.every(1).minutes.do(lambda: LN_EPortal(PG_cursor, PG_conn, model_LN_EPortal, model_LN_EPortal_COconsumption))
 # schedule.every(1).minutes.do(lambda: run_threaded(lambda: LN_EPortal(PG_cursor, PG_conn, model_LN_EPortal)))
 
 schedule.every().day.at("00:01").do(lambda: LH1_AutoRetrainingModel(PG_cursor))
@@ -281,7 +285,9 @@ def GenAI():
 
 @app.post("/Test")
 def Test():
-    LN_EPortal(PG_cursor, PG_conn, model_LN_EPortal)
+    # LN_EPortal(PG_cursor, PG_conn, model_LN_EPortal)
+    LN_Forecasting_ARORSL(PG_cursor, PG_conn, "../models_rls")
     return None
+
 if __name__ == "__main__":
     uvicorn.run(app, host="192.168.1.92", port=8000)

@@ -339,7 +339,7 @@ def LH2_OptimizerParameter(PG_cursor, PG_conn, model_LH2_OptimizerParameter):
             DCS = [float(value) for value in DCS]
             values = [crontime] + [float(x) for x in input_stage1[0]] + [float(x) for x in DCS] + [0]
         else:
-            if cron_datetime.strftime("%H:%M:%S") in target_times or abs(DCS_Items[0] - OptimizerParameter_CoalConsumption[11]) >= 3:
+            if cron_datetime.strftime("%H:%M:%S") in target_times or abs(DCS_Items[0] - OptimizerParameter_CoalConsumption[11]) >= 2:
                 values = [crontime] + [float(x) for x in input_stage1[0]] + [float(x) for x in best_solution] + [float(best_fitness)]
             else:
                 if best_fitness > OptimizerParameter_CoalConsumption[-1]:
@@ -549,7 +549,7 @@ def LH1_OptimizerParameter(PG_cursor, PG_conn, model_LH1_OptimizerParameter):
             DCS = [float(value) for value in DCS]
             values = [crontime] + [float(x) for x in input_stage1[0]] + [float(x) for x in DCS] + [0]
         else:
-            if cron_datetime.strftime("%H:%M:%S") in target_times or abs(DCS_Items[0] - OptimizerParameter_CoalConsumption[11]) >= 3:
+            if cron_datetime.strftime("%H:%M:%S") in target_times or abs(DCS_Items[0] - OptimizerParameter_CoalConsumption[11]) >= 2:
                 values = [crontime] + [float(x) for x in input_stage1[0]] + [float(x) for x in best_solution] + [float(best_fitness)]
             else:
                 if best_fitness > OptimizerParameter_CoalConsumption[-1]:
