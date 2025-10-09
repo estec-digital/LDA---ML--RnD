@@ -207,7 +207,9 @@ def LN_Forecasting_ARORSL(PG_cursor, PG_conn, model_dir="../models_rls"):
         "CM_A181PDT0002_DACA_PV__Value", "CM_A181PT0005_DACA_PV__Value",
         "CM_A181PT0006_DACA_PV__Value", "CM_A181PT0007_DACA_PV__Value",
         "CM_A181PT0008_DACA_PV__Value", "CM_A181TE0007_DACA_PV__Value",
-        "CM_A181S015BPGPV_DACA_PV__Value", "CM_A181_TIEUHAOCO_OUT__Value"
+        "CM_A181S015BPGPV_DACA_PV__Value", "CM_A181_TIEUHAOCO_OUT__Value",
+        "CM_A181TE0023_DACA_PV__Value", "CM_A181AT0004_DACA_PV__Value",
+        "CM_A181LT0001_DACA_PV__Value"
     ]
 
     col_str = ",".join([f'"{c}"' for c in columns])
