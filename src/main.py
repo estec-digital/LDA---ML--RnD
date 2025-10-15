@@ -10,6 +10,7 @@ from ModelEvaluation import LH1_Evaluation, LH2_Evaluation, LN_Evaluation
 from ErrorWarning import LN_ErrorWarning
 from AutoRetrainingModels import LH1_AutoRetrainingModel, LH2_AutoRetrainingModel, LN_AutoRetrainingModel
 from EPortal_OptimizerParameter import LN_EPortal
+from EPortal_GenerateParameter import *
 from Forecasting import *
 import time
 import pyodbc
@@ -110,9 +111,10 @@ model_LN_OptimizerParameter_COconsumption = load_model(path_LN_modelOptimizerPar
 
 path_LN_EPortal = 'D:/001.Project/LDA_master/models/LoNung.sav'
 path_LN_EPortal_COconsumption = 'D:/001.Project/LDA_master/models/LoNung_tieuhao.sav'
+path_LN_EPortal_Nhietkhoithai = 'D:/001.Project/LDA_master/models/LoNung_nhietkhoithai.sav'
 model_LN_EPortal = load_model(path_LN_EPortal)
 model_LN_EPortal_COconsumption = load_model(path_LN_EPortal_COconsumption)
-
+model_LN_EPortal_Nhietkhoithai = load_model(path_LN_EPortal_Nhietkhoithai)
 
 def backup_database():
     os.system("docker-compose -f D:/001.Project/LDA_master/docker-compose.yaml exec postgres pg_dump -U LDA LDA > D:/001.Project/LDA_master/backup/database/backup.sql")
@@ -251,6 +253,37 @@ def API_LN_GenerateParameter(input: InputLN):
     # print(input)
     output = LN_GenerateParameter(crontime, input, PG_cursor, PG_conn, model_LN_OptimizerParameter_Stage1, model_LN_OptimizerParameter_Stage2, model_LN_OptimizerParameter_COconsumption)
     return output
+
+class InputLN_EPortal(BaseModel):
+    CronTime: datetime
+    LDA07060012000157: float
+    LDA07060012000158: float
+    LDA07060012000166: float    
+    LDA11070012000630: float
+    CM_A181FT0001_DACA_PV__Value: float 
+    CM_A181PT0013_DACA_PV__Value: float
+    CM_A181_V19_COM_V19_IN_5_PV3__Value: float
+    CM_A181TE0023_DACA_PV__Value: float 
+    CM_A181FT0010_DACA_PV__Value: float
+    CM_A181AT0004_DACA_PV__Value: float 
+    CM_A181PDT0002_DACA_PV__Value: float
+    CM_A181PT0002_DACA_PV__Value: float 
+    CM_A181PT0003_DACA_PV__Value: float
+    CM_A181PT0004_DACA_PV__Value: float 
+    CM_A181PT0005_DACA_PV__Value: float
+    CM_A181PT0006_DACA_PV__Value: float 
+    CM_A181PT0007_DACA_PV__Value: float
+    CM_A181PT0008_DACA_PV__Value: float 
+    CM_A181_TIEUHAOCO_OUT__Value: float
+
+@app.post("/LN_EPortal_GenerateParameter")
+def API_LN_EPortal_GenerateParameter(input: InputLN_EPortal):
+    output = LN_EPortal_GenerateParameter(input,
+                                          PG_cursor, PG_conn,
+                                          model_LN_EPortal,
+                                          model_LN_EPortal_COconsumption,
+                                          model_LN_EPortal_Nhietkhoithai)
+    return {"status": "success"}
 
 # @app.post("/LH1_Evaluation")
 # def API_LH1_Evaluation():
