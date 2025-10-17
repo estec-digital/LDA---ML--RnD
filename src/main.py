@@ -139,8 +139,10 @@ schedule.every(1).minutes.do(lambda: LN_Evaluation(PG_cursor, PG_conn))
 
 schedule.every(1).minutes.do(lambda: LH1_Evaluation(PG_cursor, PG_conn))
 schedule.every(1).minutes.do(lambda: LH2_Evaluation(PG_cursor, PG_conn))
-schedule.every(1).minutes.do(lambda: LH1_Forecasting(PG_cursor, PG_conn, model_LH_Forecasting))
-schedule.every(1).minutes.do(lambda: LH2_Forecasting(PG_cursor, PG_conn, model_LH_Forecasting))
+# schedule.every(1).minutes.do(lambda: LH1_Forecasting(PG_cursor, PG_conn, model_LH_Forecasting))
+# schedule.every(1).minutes.do(lambda: LH2_Forecasting(PG_cursor, PG_conn, model_LH_Forecasting))
+schedule.every(1).minutes.do(lambda: LH1_Forecasting_ARORSL(PG_cursor, PG_conn, "../models_rls"))
+schedule.every(1).minutes.do(lambda: LH2_Forecasting_ARORSL(PG_cursor, PG_conn, "../models_rls"))
 
 # schedule.every(1).minutes.do(lambda: LN_Forecasting(PG_cursor, PG_conn, model_LN_Forecasting))
 schedule.every(1).minutes.do(lambda: LN_Forecasting_ARORSL(PG_cursor, PG_conn, model_dir="../models_rls"))
@@ -319,7 +321,7 @@ def GenAI():
 @app.post("/Test")
 def Test():
     # LN_EPortal(PG_cursor, PG_conn, model_LN_EPortal)
-    LN_Forecasting_ARORSL(PG_cursor, PG_conn, "../models_rls")
+    LH2_Forecasting_ARORSL(PG_cursor, PG_conn, "../models_rls")
     return None
 
 if __name__ == "__main__":
