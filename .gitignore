@@ -214,3 +214,4 @@ __pycache__/
 myenv/
 data/
 backup/database
+cert/

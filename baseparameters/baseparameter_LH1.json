@@ -355,7 +355,7 @@
         {
             "tag": "B1_S051AIT_DACA_PV__Value",
             "desc": "Dòng điện làm việc quạt cấp 1 (A)",
-            "min": 56.09616,
+            "min": 57.09616,
             "max": 57.32438
         },
         {
@@ -495,7 +495,7 @@
         {
             "tag": "B1_S051AIT_DACA_PV__Value",
             "desc": "Dòng điện làm việc quạt cấp 1 (A)",
-            "min": 56.49667,
+            "min": 57.49667,
             "max": 57.70153
         },
         {

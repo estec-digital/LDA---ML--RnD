@@ -495,8 +495,8 @@
         {
             "tag": "B2_S051AIT_DACA_PV__Value",
             "desc": "Dòng điện làm việc quạt cấp 1 (A)",
-            "min": 57.83627,
-            "max": 58.96484
+            "min": 56.83627,
+            "max": 57.96484
         },
         {
             "tag": "B2_AZ1011ZT_DACA_PV__Value",
@@ -635,8 +635,8 @@
         {
             "tag": "B2_S051AIT_DACA_PV__Value",
             "desc": "Dòng điện làm việc quạt cấp 1 (A)",
-            "min": 57.97984,
-            "max": 59.42562
+            "min": 56.97984,
+            "max": 58.42562
         },
         {
             "tag": "B2_AZ1011ZT_DACA_PV__Value",
@@ -1269,8 +1269,8 @@
         {
             "tag": "B2_PT1281_DACA_PV__Value",
             "desc": "Áp lực hơi quá nhiệt (MPa)",
-            "min": 3.82848275,
-            "max": 4.7941745
+            "min": 4.82848275,
+            "max": 4.9941745
         },
         {
             "tag": "B2_AT1011_DACA_PV__Value",
@@ -1409,8 +1409,8 @@
         {
             "tag": "B2_PT1281_DACA_PV__Value",
             "desc": "Áp lực hơi quá nhiệt (MPa)",
-            "min": 3.2906075,
-            "max": 3.3544
+            "min": 4.8,
+            "max": 5
         },
         {
             "tag": "B2_AT1011_DACA_PV__Value",
@@ -1689,8 +1689,8 @@
         {
             "tag": "B2_PT1281_DACA_PV__Value",
             "desc": "Áp lực hơi quá nhiệt (MPa)",
-            "min": 3.237486,
-            "max": 3.691123
+            "min": 4.8,
+            "max": 5
         },
         {
             "tag": "B2_AT1011_DACA_PV__Value",
@@ -1829,8 +1829,8 @@
         {
             "tag": "B2_PT1281_DACA_PV__Value",
             "desc": "Áp lực hơi quá nhiệt (MPa)",
-            "min": 3.207887,
-            "max": 3.410832
+            "min": 4.8,
+            "max": 5
         },
         {
             "tag": "B2_AT1011_DACA_PV__Value",
@@ -1969,8 +1969,8 @@
         {
             "tag": "B2_PT1281_DACA_PV__Value",
             "desc": "Áp lực hơi quá nhiệt (MPa)",
-            "min": 3.050392,
-            "max": 3.114106
+            "min": 4.8,
+            "max": 5
         },
         {
             "tag": "B2_AT1011_DACA_PV__Value",
@@ -2103,14 +2103,14 @@
         {
             "tag": "B2_Z_BEDT_DACA_PV__Value",
             "desc": "Nhiệt độ buồng đốt (Độ C)",
-            "min": 933.3201,
-            "max": 943.81495
+            "min": 910,
+            "max": 930
         },
         {
             "tag": "B2_PT1281_DACA_PV__Value",
             "desc": "Áp lực hơi quá nhiệt (MPa)",
-            "min": 2.9932974999999997,
-            "max": 4.855046
+            "min": 4.8,
+            "max": 5
         },
         {
             "tag": "B2_AT1011_DACA_PV__Value",
@@ -2175,8 +2175,8 @@
         {
             "tag": "B2_S051AIT_DACA_PV__Value",
             "desc": "Dòng điện làm việc quạt cấp 1 (A)",
-            "min": 68.82824500000001,
-            "max": 73.214005
+            "min": 70.82824500000001,
+            "max": 75.214005
         },
         {
             "tag": "B2_AZ1011ZT_DACA_PV__Value",
@@ -2193,8 +2193,8 @@
         {
             "tag": "B2_S052AVFD_CRT_DACA_PV__Value",
             "desc": "Dòng điện làm việc quạt gió cấp 2 (S052aVFD)",
-            "min": 36.12844,
-            "max": 40.1394
+            "min": 38.12844,
+            "max": 42.1394
         },
         {
             "tag": "B2_S052AVFD_FB_DACA_PV__Value",
@@ -2243,148 +2243,148 @@
         {
             "tag": "B2_Z_BEDT_DACA_PV__Value",
             "desc": "Nhiệt độ buồng đốt (Độ C)",
-            "min": 933.1332,
-            "max": 942.1631
+            "min": 919.812075,
+            "max": 930.935825
         },
         {
             "tag": "B2_PT1281_DACA_PV__Value",
             "desc": "Áp lực hơi quá nhiệt (MPa)",
-            "min": 4.587024,
-            "max": 4.762278
+            "min": 4.79098075,
+            "max": 4.952642
         },
         {
             "tag": "B2_AT1011_DACA_PV__Value",
             "desc": "Oxy đuôi lò AT1011 (%)",
-            "min": 5.352881,
-            "max": 5.606061
+            "min": 6.018063,
+            "max": 6.62357175
         },
         {
             "tag": "B2_AT1012_DACA_PV__Value",
             "desc": "Oxy đuôi lò AT1012 (%)",
-            "min": 4.136536,
-            "max": 4.516774
+            "min": 5.593492,
+            "max": 5.821449
         },
         {
             "tag": "B2_TE1212_DACA_PV__Value",
             "desc": "Nhiệt độ hơi quá nhiệt (Độ C)",
-            "min": 447.9408,
-            "max": 452.4406
+            "min": 436.1907,
+            "max": 442.1426
         },
         {
             "tag": "B2_PT1061_DACA_PV__Value",
             "desc": "Áp lực Windbox PT1061 (kPa)",
-            "min": 10.36073,
-            "max": 10.64652
+            "min": 9.945836,
+            "max": 10.4827
         },
         {
             "tag": "B2_PT1071_DACA_PV__Value",
             "desc": "Áp lực Windbox PT1071 (kPa)",
-            "min": 10.41821,
-            "max": 10.71647
+            "min": 9.918736,
+            "max": 10.45827
         },
         {
             "tag": "B2_PT1111_DACA_PV__Value",
             "desc": "Áp lực tầng liệu PT1111 (Pa)",
-            "min": 347.799,
-            "max": 427.0246
+            "min": 481.72145,
+            "max": 550.368
         },
         {
             "tag": "B2_PT1112_DACA_PV__Value",
             "desc": "Áp lực tầng liệu PT1112 (Pa)",
-            "min": 332.4542,
-            "max": 412.4137
+            "min": 524.26055,
+            "max": 587.250625
         },
         {
             "tag": "B2_PT1211_DACA_PV__Value",
             "desc": "Áp lực đỉnh buồng đốt PT1211 (Pa)",
-            "min": 5.704697,
-            "max": 55.24292
+            "min": -45.750445,
+            "max": -13.316297500000001
         },
         {
             "tag": "B2_PT1212_DACA_PV__Value",
             "desc": "Áp lực đỉnh buồng đốt PT1212 (Pa)",
-            "min": 14.31541,
-            "max": 50.20697
+            "min": -29.80234,
+            "max": -0.9666709
         },
         {
             "tag": "B2_TZ1131ZT_DACA_PV__Value",
             "desc": "Độ mở van đầu hút quạt cấp 1 (%)",
-            "min": 66.03313,
-            "max": 68.23275
+            "min": 60.70422,
+            "max": 62.26997
         },
         {
             "tag": "B2_S051AIT_DACA_PV__Value",
             "desc": "Dòng điện làm việc quạt cấp 1 (A)",
-            "min": 75.45781,
-            "max": 77.53132
+            "min": 77.72080749999999,
+            "max": 79.47544500000001
         },
         {
             "tag": "B2_AZ1011ZT_DACA_PV__Value",
             "desc": "Độ mở van đầu hút quạt cấp 2 (%)",
-            "min": 99.76349,
-            "max": 99.78795
+            "min": 99.95921,
+            "max": 100.0037
         },
         {
             "tag": "B2_S052AIT_DACA_PV__Value",
             "desc": "Dòng điện làm việc quạt cấp 2 (A)",
-            "min": 24.58831,
-            "max": 29.11598
+            "min": 32.066535,
+            "max": 33.42773
         },
         {
             "tag": "B2_S052AVFD_CRT_DACA_PV__Value",
             "desc": "Dòng điện làm việc quạt gió cấp 2 (S052aVFD)",
-            "min": 39.14852,
-            "max": 43.15474
+            "min": 46.14321,
+            "max": 47.15464
         },
         {
             "tag": "B2_S052AVFD_FB_DACA_PV__Value",
             "desc": "Tần số VFD (Hz)",
-            "min": 38.03754,
-            "max": 40.53274
+            "min": 41.2005,
+            "max": 41.659302499999995
         },
         {
             "tag": "B2_PT1081_DACA_PV__Value",
             "desc": "Áp lực hồi liệu PT1081 (kPa)",
-            "min": 36.36093,
-            "max": 36.69146
+            "min": 35.822002499999996,
+            "max": 36.342565
         },
         {
             "tag": "B2_PT1082_DACA_PV__Value",
             "desc": "Áp lực hồi liệu PT1082 (kPa)",
-            "min": 36.42346,
-            "max": 36.73953
+            "min": 35.8945525,
+            "max": 36.409825
         },
         {
             "tag": "B2_PT1091_DACA_PV__Value",
             "desc": "Áp lực hồi liệu PT1091 (kPa)",
-            "min": 36.17212,
-            "max": 36.48596
+            "min": 35.49436,
+            "max": 36.01854
         },
         {
             "tag": "B2_PT1092_DACA_PV__Value",
             "desc": "Áp lực hồi liệu PT1092 (kPa)",
-            "min": 36.08917,
-            "max": 36.4108
+            "min": 35.4345025,
+            "max": 35.94338
         },
         {
             "tag": "B2_TE1111_DACA_PV__Value",
             "desc": "Nhiệt độ nháy đuôi lò TE1111 (Độ C)",
-            "min": 165.2337,
-            "max": 169.4664
+            "min": 168.189,
+            "max": 172.28492500000002
         },
         {
             "tag": "B2_TE1112_DACA_PV__Value",
             "desc": "Nhiệt độ nháy đuôi lò TE1112 (Độ C)",
-            "min": 145.8319,
-            "max": 147.1004
+            "min": 149.6196,
+            "max": 151.9964
         }
     ],
     "155": [
         {
             "tag": "B2_Z_BEDT_DACA_PV__Value",
             "desc": "Nhiệt độ buồng đốt (Độ C)",
-            "min": 944.1802749999999,
-            "max": 950.784225
+            "min": 910,
+            "max": 930
         },
         {
             "tag": "B2_PT1281_DACA_PV__Value",

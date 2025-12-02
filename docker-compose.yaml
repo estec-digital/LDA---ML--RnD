@@ -26,6 +26,8 @@ services:
     volumes:
       - ./data:/postgresql/data
       - ./postgre/init:/docker-entrypoint-initdb.d
+      # - ./data/pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf:ro
+      # - ./data/postgresql.conf:/var/lib/postgresql/data/postgresql.conf:ro
     restart: always
     networks:
       - LDA
