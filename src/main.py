@@ -27,7 +27,9 @@ warnings.filterwarnings("ignore", message=".*does not have valid feature names.*
 # Config
 app = FastAPI()
 
-load_dotenv(dotenv_path="D:/001.Project/LDA_master/.env",override=True)
+load_dotenv(dotenv_path="../.env",override=True)
+
+# Database Connections Config
 PG_host = os.getenv("PG_HOST")
 PG_port = os.getenv("PG_PORT")
 PG_database = os.getenv("PG_DATABASE")
