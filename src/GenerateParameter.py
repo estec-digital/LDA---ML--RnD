@@ -95,7 +95,7 @@ def LH1_GenerateParameter(input, PG_cursor, PG_conn, model_LH1_GenerateParameter
             # 'crossover_probability': 0.8, # Tăng xác suất lai ghép để đẩy mạnh sự kết hợp gen tốt
             'parents_portion': 0.5,       # Tăng tỷ lệ chọn làm cha mẹ để đảm bảo nhiều nguồn gen tốt được kết hợp
             'crossover_type': 'one_point', # Chuyển sang lai ghép điểm đơn để tăng tính đột phá khi kết hợp gen
-            'max_iteration_without_improv': 100, # Tăng ngưỡng dừng để tránh kết luận sớm khi mô hình chưa tối ưu
+            'max_iteration_without_improv': 1, # Tăng ngưỡng dừng để tránh kết luận sớm khi mô hình chưa tối ưu
         }
         model = ga(
             dimension=len(GenerateParameter[0]),
@@ -108,15 +108,15 @@ def LH1_GenerateParameter(input, PG_cursor, PG_conn, model_LH1_GenerateParameter
         model.run(function=objective_function, no_plot = True, disable_printing=True)
         OptimizerParameter = model.result['variable']
         OptimizerParameter_CoalConsumption = model.result['score']
-        # print('OptimizerParameter:', OptimizerParameter)
-        # print('CoalConsumption:', OptimizerParameter_CoalConsumption)
+        print('OptimizerParameter:', OptimizerParameter)
+        print('CoalConsumption:', OptimizerParameter_CoalConsumption)
 
         # Giai đoạn 5: Chạy model History để có bộ thông số phù hợp với tải và tính toán tiêu hao than dự kiến
         HistoryParameter = model_LH1_HistoryParameter.predict(input_stage1)
         input_HistoryParameter_coalconsumption = np.hstack((input_stage1, HistoryParameter))
         HistoryParameter_CoalConsumption = model_LH1_CoalConsumption.predict(input_HistoryParameter_coalconsumption)
-        # print("HistoryParameter:", HistoryParameter)
-        # print("HistoryParameter_CoalConsumption:", HistoryParameter_CoalConsumption)
+        print("HistoryParameter:", HistoryParameter)
+        print("HistoryParameter_CoalConsumption:", HistoryParameter_CoalConsumption)
 
         # Giai đoạn 6: Khởi tạo cấu trúc output dưới dạng json
         crontime = datetime.now().strftime('%Y-%m-%d %H:%M:00')
@@ -183,9 +183,9 @@ def LH1_GenerateParameter(input, PG_cursor, PG_conn, model_LH1_GenerateParameter
             "Local_B1_PT1092_DACA_PV__Value": HistoryParameter[0][20], 
             "Local_B1_TE1111_DACA_PV__Value": HistoryParameter[0][21],
             "Local_B1_TE1112_DACA_PV__Value": HistoryParameter[0][22], 
-            "Local_B1_FT1151_DIVA_OUT__Value": HistoryParameter_CoalConsumption[0][0]
+            "Local_B1_FT1151_DIVA_OUT__Value": float(HistoryParameter_CoalConsumption[0])
         }
-        # print(output)
+        print(output)
 
         # Giai đoạn 7: Lưu vào database
             # Truy vấn bảng "DATA_LH1_GenerateParameter" để lấy tên cột
@@ -195,7 +195,7 @@ def LH1_GenerateParameter(input, PG_cursor, PG_conn, model_LH1_GenerateParameter
         placeholders = ', '.join(['%s'] * len(name_columns))
         columns = ', '.join([f'"{col}"' for col in name_columns])
         values = [crontime] + [float(x) for x in input_stage1[0]] + [float(x) for x in OptimizerParameter] + [float(OptimizerParameter_CoalConsumption)] + [float(x) for x in HistoryParameter[0]] + [float(x) for x in HistoryParameter_CoalConsumption]
-        # print(values)
+        print(values)
         insert_query = f'''
             INSERT INTO "DATA_LH1_GenerateParameter" ({columns}) VALUES ({placeholders})
             '''
@@ -257,7 +257,7 @@ def LH2_GenerateParameter(input, PG_cursor, PG_conn, model_LH2_GenerateParameter
             # 'crossover_probability': 0.8, # Tăng xác suất lai ghép để đẩy mạnh sự kết hợp gen tốt
             'parents_portion': 0.5,       # Tăng tỷ lệ chọn làm cha mẹ để đảm bảo nhiều nguồn gen tốt được kết hợp
             'crossover_type': 'one_point', # Chuyển sang lai ghép điểm đơn để tăng tính đột phá khi kết hợp gen
-            'max_iteration_without_improv': 100, # Tăng ngưỡng dừng để tránh kết luận sớm khi mô hình chưa tối ưu
+            'max_iteration_without_improv': 1, # Tăng ngưỡng dừng để tránh kết luận sớm khi mô hình chưa tối ưu
         }
         model = ga(
             dimension=len(GenerateParameter[0]),
@@ -345,7 +345,7 @@ def LH2_GenerateParameter(input, PG_cursor, PG_conn, model_LH2_GenerateParameter
             "Local_B2_PT1092_DACA_PV__Value": HistoryParameter[0][20], 
             "Local_B2_TE1111_DACA_PV__Value": HistoryParameter[0][21],
             "Local_B2_TE1112_DACA_PV__Value": HistoryParameter[0][22], 
-            "Local_B2_FT1151_DIVA_OUT__Value": HistoryParameter_CoalConsumption[0][0]
+            "Local_B2_FT1151_DIVA_OUT__Value": float(HistoryParameter_CoalConsumption[0])
         }
         # print(output)
 
