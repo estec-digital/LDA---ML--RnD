@@ -57,21 +57,21 @@ XHQ_cursor = XHQ_conn.cursor()
 path_LH1_OptimizerParameter = 'D:/001.Project/LDA_master/models/LH1_Step1_0703.sav'
 path_LH1_GenerateParameter = 'D:/001.Project/LDA_master/models/LH1_Step1_0703.sav'
 # path_LH1_CoalConsumption = 'D:/001.Project/LDA_master/models/LH_Step2.sav'
-path_LH1_CoalConsumption = 'D:/001.Project/LDA_master/models/LH1_RandomForestRegressor.sav'
+# path_LH1_CoalConsumption = 'D:/001.Project/LDA_master/models/LH1_RandomForestRegressor.sav'
 # path_LH1_CoalConsumption = 'D:/001.Project/LDA_master/autotrain/best/LH_modelOptimizerParameter_CoalConsumption_best.sav'
 
         # Local: KNN Models (k=1 is nearest values)
 # path_LH1_HistoryParameter = 'D:/001.Project/LDA_master/models/LH_modelHistoryParameter_2025.sav'
-path_LH1_HistoryParameter = 'D:/001.Project/LDA_master/models/LH1_modelHistoryParameter_112025.sav'
+# path_LH1_HistoryParameter = 'D:/001.Project/LDA_master/models/LH1_modelHistoryParameter_112025.sav'
 # path_LH1_HistoryParameter = 'D:/001.Project/LDA_master/models/LH1_knn_model_0703.sav'
 # path_LH1_HistoryParameter = 'D:/001.Project/LDA_master/autotrain/best/LH1_History_best.sav'
     # Models:
         # Global: RandomForestRegression Models
 model_LH1_OptimizerParameter = load_model(path_LH1_OptimizerParameter)
 model_LH1_GenerateParameter = load_model(path_LH1_GenerateParameter)
-model_LH1_CoalConsumption = load_model(path_LH1_CoalConsumption)
+# model_LH1_CoalConsumption = load_model(path_LH1_CoalConsumption)
         # Local: KNN Models (k=1 is nearest values)
-model_LH1_HistoryParameter = load_model(path_LH1_HistoryParameter)
+# model_LH1_HistoryParameter = load_model(path_LH1_HistoryParameter)
 
 # LoHoi2============================
     # Path models
@@ -80,20 +80,20 @@ path_LH2_OptimizerParameter = 'D:/001.Project/LDA_master/models/LH2_Step1_0703.s
 # path_LH2_OptimizerParameter = 'D:/001.Project/LDA_master/autotrain/best/LH2_Optimizer_best.sav'
 path_LH2_GenerateParameter = 'D:/001.Project/LDA_master/models/LH2_Step1_0703.sav'
 # path_LH2_GenerateParameter = 'D:/001.Project/LDA_master/autotrain/best/LH2_Optimizer_best.sav'
-path_LH2_CoalConsumption = 'D:/001.Project/LDA_master/models/LH_Step2.sav'
+# path_LH2_CoalConsumption = 'D:/001.Project/LDA_master/models/LH_Step2.sav'
 # path_LH2_CoalConsumption = 'D:/001.Project/LDA_master/autotrain/best/LH_modelOptimizerParameter_CoalConsumption_best.sav'
         # Local: KNN Models (k=1 is nearest values)
 # path_LH2_HistoryParameter = 'D:/001.Project/LDA_master/models/LH2_knn_model_0703.sav'
-path_LH2_HistoryParameter = 'D:/001.Project/LDA_master/models/LH1_modelHistoryParameter_112025.sav'
+# path_LH2_HistoryParameter = 'D:/001.Project/LDA_master/models/LH1_modelHistoryParameter_112025.sav'
 # path_LH2_HistoryParameter = 'D:/001.Project/LDA_master/autotrain/best/LH2_History_best.sav'
 
     # Models:
         # Global: RandomForestRegression Models
 model_LH2_OptimizerParameter = load_model(path_LH2_OptimizerParameter)
 model_LH2_GenerateParameter = load_model(path_LH2_GenerateParameter)
-model_LH2_CoalConsumption = load_model(path_LH2_CoalConsumption)
+# model_LH2_CoalConsumption = load_model(path_LH2_CoalConsumption)
         # Local: KNN Models (k=1 is nearest values)
-model_LH2_HistoryParameter = load_model(path_LH2_HistoryParameter)
+# model_LH2_HistoryParameter = load_model(path_LH2_HistoryParameter)
     
     # Model Forcasting 
 path_LH_Forcasting = 'D:/001.Project/LDA_master/models/LH_Predict5M.sav'
@@ -132,10 +132,10 @@ schedule.every(1).minutes.do(lambda: getdataXHQ_DATA_CTCN(PG_cursor, XHQ_cursor,
 schedule.every(1).minutes.do(lambda: getdataXHQ_DCS_Items(PG_cursor, XHQ_cursor,PG_conn))
 
 schedule.every(1).minutes.do(lambda: LH1_OptimizerParameter(PG_cursor, PG_conn, model_LH1_OptimizerParameter))
-schedule.every(1).minutes.do(lambda: LH1_HistoryParameter(PG_cursor, PG_conn, model_LH1_HistoryParameter, model_LH1_CoalConsumption))
+schedule.every(1).minutes.do(lambda: LH1_HistoryParameter(PG_cursor, PG_conn))
 
 schedule.every(1).minutes.do(lambda: LH2_OptimizerParameter(PG_cursor, PG_conn, model_LH2_OptimizerParameter))
-schedule.every(1).minutes.do(lambda: LH2_HistoryParameter(PG_cursor, PG_conn, model_LH2_HistoryParameter, model_LH2_CoalConsumption))
+schedule.every(1).minutes.do(lambda: LH2_HistoryParameter(PG_cursor, PG_conn))
 
 schedule.every(1).minutes.do(lambda: LN_OptimizerParameter(PG_cursor, PG_conn, model_LN_OptimizerParameter_Stage1, model_LN_OptimizerParameter_Stage2, model_LN_OptimizerParameter_COconsumption))
 schedule.every(1).minutes.do(lambda: LN_ErrorWarning(PG_cursor, PG_conn))
@@ -240,7 +240,7 @@ def API_LH1_GenerateParameter(input: InputLH1):
     input = list(input.dict().values())
     input = input[1:]
     # print(input)
-    output = LH1_GenerateParameter(input, PG_cursor, PG_conn, model_LH1_GenerateParameter, model_LH1_HistoryParameter, model_LH1_CoalConsumption)
+    output = LH1_GenerateParameter(input, PG_cursor, PG_conn, model_LH1_GenerateParameter)
     return output
 
 @app.post("/API_LH2_GenerateParameter")
@@ -248,7 +248,7 @@ def API_LH2_GenerateParameter(input: InputLH2):
     input = list(input.dict().values())
     input = input[1:]
     # print(input)
-    output = LH2_GenerateParameter(input, PG_cursor, PG_conn, model_LH2_GenerateParameter, model_LH2_HistoryParameter, model_LH2_CoalConsumption)
+    output = LH2_GenerateParameter(input, PG_cursor, PG_conn, model_LH2_GenerateParameter)
     return output
 
 @app.post("/API_LN_GenerateParameter")
@@ -326,7 +326,7 @@ def GenAI():
 def Test():
     # LN_EPortal(PG_cursor, PG_conn, model_LN_EPortal)
     # LH2_Forecasting_ARORSL(PG_cursor, PG_conn, "../models_rls")
-    LH2_HistoryParameter(PG_cursor, PG_conn, model_LH2_HistoryParameter, model_LH2_CoalConsumption)
+    LH2_HistoryParameter(PG_cursor, PG_conn)
     return None
 
 if __name__ == "__main__":

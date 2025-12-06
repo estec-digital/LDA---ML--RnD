@@ -1,7 +1,7 @@
 import numpy as np
 from datetime import datetime
 import pandas as pd
-def LH1_HistoryParameter(PG_cursor, PG_conn, model_LH1_HistoryParameter, model_LH1_CoalConsumption):
+def LH1_HistoryParameter(PG_cursor, PG_conn):
     """
     1. Workflow:
         Tìm kiếm bộ thông số Local dựa trên dữ liệu chất lượng than mới nhất hiện tại.
@@ -181,7 +181,7 @@ def LH1_HistoryParameter(PG_cursor, PG_conn, model_LH1_HistoryParameter, model_L
         print(f"An error occurred: {e}")
         pass
 
-def LH2_HistoryParameter(PG_cursor, PG_conn, model_LH2_HistoryParameter, model_LH2_CoalConsumption):
+def LH2_HistoryParameter(PG_cursor, PG_conn):
     """
     1. Workflow:
         Tìm kiếm bộ thông số Local dựa trên dữ liệu chất lượng than mới nhất hiện tại.

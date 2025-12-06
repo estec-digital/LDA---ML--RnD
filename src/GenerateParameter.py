@@ -2,6 +2,7 @@ import numpy as np
 from datetime import datetime
 from geneticalgorithm2 import geneticalgorithm2 as ga
 import pickle
+import pandas as pd
 
 def load_model(filename):
     model = pickle.load(open(filename, 'rb'))
@@ -45,7 +46,7 @@ def objective_function(X):
         print(f"[Penalty] Invalid parameters {X}: {e}")
         return 1e6  
 
-def LH1_GenerateParameter(input, PG_cursor, PG_conn, model_LH1_GenerateParameter, model_LH1_HistoryParameter, model_LH1_CoalConsumption):
+def LH1_GenerateParameter(input, PG_cursor, PG_conn, model_LH1_GenerateParameter):
     """
         1. Workflow:
             Tạo bộ thông số vận hành tối ưu và bộ thông số Local dựa trên dữ liệu từ API gửi về.
@@ -112,14 +113,47 @@ def LH1_GenerateParameter(input, PG_cursor, PG_conn, model_LH1_GenerateParameter
         print('CoalConsumption:', OptimizerParameter_CoalConsumption)
 
         # Giai đoạn 5: Chạy model History để có bộ thông số phù hợp với tải và tính toán tiêu hao than dự kiến
-        HistoryParameter = model_LH1_HistoryParameter.predict(input_stage1)
-        input_HistoryParameter_coalconsumption = np.hstack((input_stage1, HistoryParameter))
-        HistoryParameter_CoalConsumption = model_LH1_CoalConsumption.predict(input_HistoryParameter_coalconsumption)
-        print("HistoryParameter:", HistoryParameter)
-        print("HistoryParameter_CoalConsumption:", HistoryParameter_CoalConsumption)
+        # HistoryParameter = model_LH1_HistoryParameter.predict(input_stage1)
+        # input_HistoryParameter_coalconsumption = np.hstack((input_stage1, HistoryParameter))
+        # HistoryParameter_CoalConsumption = model_LH1_CoalConsumption.predict(input_HistoryParameter_coalconsumption)
+        # print("HistoryParameter:", HistoryParameter)
+        # print("HistoryParameter_CoalConsumption:", HistoryParameter_CoalConsumption)
+        power = input_stage1[0][11]
+        df_baseparameter = pd.read_csv('../baseparameters/baseparameter_LH1.csv')
+        bins = df_baseparameter['power_bin'].unique()
+        # Tìm bin gần nhất với công suất hiện tại
+        nearest_bin = min(bins, key=lambda x: abs(x - power))
+        # Lấy bộ thông số tương ứng
+        row = df_baseparameter[df_baseparameter['power_bin'] == nearest_bin].iloc[0]
+        print("Selected base parameters row:", row)
 
         # Giai đoạn 6: Khởi tạo cấu trúc output dưới dạng json
         crontime = datetime.now().strftime('%Y-%m-%d %H:%M:00')
+        local_parameters = [
+            row['B1_Z_BEDT_DACA_PV__Value'],
+            row['B1_PT1281_DACA_PV__Value'],
+            row['B1_AT1011_DACA_PV__Value'],
+            row['B1_AT1012_DACA_PV__Value'],
+            row['B1_TE1212_DACA_PV__Value'],
+            row['B1_PT1061_DACA_PV__Value'],
+            row['B1_PT1071_DACA_PV__Value'],
+            row['B1_PT1111_DACA_PV__Value'],
+            row['B1_PT1112_DACA_PV__Value'],
+            row['B1_PT1211_DACA_PV__Value'],
+            row['B1_PT1212_DACA_PV__Value'],
+            row['B1_TZ1131ZT_DACA_PV__Value'],
+            row['B1_S051AIT_DACA_PV__Value'],
+            row['B1_AZ1011ZT_DACA_PV__Value'],
+            row['B1_S052AIT_DACA_PV__Value'],
+            row['B1_S052AVFD_CRT_DACA_PV__Value'],
+            row['B1_S052AVFD_FB_DACA_PV__Value'],
+            row['B1_PT1081_DACA_PV__Value'],
+            row['B1_PT1082_DACA_PV__Value'],
+            row['B1_PT1091_DACA_PV__Value'],
+            row['B1_PT1092_DACA_PV__Value'],
+            row['B1_TE1111_DACA_PV__Value'],
+            row['B1_TE1112_DACA_PV__Value']
+        ]
         output = {
             "CronTime": crontime,
             "LDA12080012000243": input_stage1[0][0], 
@@ -160,30 +194,54 @@ def LH1_GenerateParameter(input, PG_cursor, PG_conn, model_LH1_GenerateParameter
             "Global_B1_TE1111_DACA_PV__Value": OptimizerParameter[21],
             "Global_B1_TE1112_DACA_PV__Value": OptimizerParameter[22], 
             "Global_B1_FT1151_DIVA_OUT__Value": OptimizerParameter_CoalConsumption,
-            "Local_B1_Z_BEDT_DACA_PV__Value": HistoryParameter[0][0], 
-            "Local_B1_PT1281_DACA_PV__Value": HistoryParameter[0][1],
-            "Local_B1_AT1011_DACA_PV__Value": HistoryParameter[0][2], 
-            "Local_B1_AT1012_DACA_PV__Value": HistoryParameter[0][3],
-            "Local_B1_TE1212_DACA_PV__Value": HistoryParameter[0][4], 
-            "Local_B1_PT1061_DACA_PV__Value": HistoryParameter[0][5],
-            "Local_B1_PT1071_DACA_PV__Value": HistoryParameter[0][6], 
-            "Local_B1_PT1111_DACA_PV__Value": HistoryParameter[0][7],
-            "Local_B1_PT1112_DACA_PV__Value": HistoryParameter[0][8], 
-            "Local_B1_PT1211_DACA_PV__Value": HistoryParameter[0][9],
-            "Local_B1_PT1212_DACA_PV__Value": HistoryParameter[0][10], 
-            "Local_B1_TZ1131ZT_DACA_PV__Value": HistoryParameter[0][11],
-            "Local_B1_S051AIT_DACA_PV__Value": HistoryParameter[0][12], 
-            "Local_B1_AZ1011ZT_DACA_PV__Value": HistoryParameter[0][13],
-            "Local_B1_S052AIT_DACA_PV__Value": HistoryParameter[0][14], 
-            "Local_B1_S052AVFD_CRT_DACA_PV__Value": HistoryParameter[0][15],
-            "Local_B1_S052AVFD_FB_DACA_PV__Value": HistoryParameter[0][16], 
-            "Local_B1_PT1081_DACA_PV__Value": HistoryParameter[0][17],
-            "Local_B1_PT1082_DACA_PV__Value": HistoryParameter[0][18], 
-            "Local_B1_PT1091_DACA_PV__Value": HistoryParameter[0][19],
-            "Local_B1_PT1092_DACA_PV__Value": HistoryParameter[0][20], 
-            "Local_B1_TE1111_DACA_PV__Value": HistoryParameter[0][21],
-            "Local_B1_TE1112_DACA_PV__Value": HistoryParameter[0][22], 
-            "Local_B1_FT1151_DIVA_OUT__Value": float(HistoryParameter_CoalConsumption[0])
+            # "Local_B1_Z_BEDT_DACA_PV__Value": HistoryParameter[0][0], 
+            # "Local_B1_PT1281_DACA_PV__Value": HistoryParameter[0][1],
+            # "Local_B1_AT1011_DACA_PV__Value": HistoryParameter[0][2], 
+            # "Local_B1_AT1012_DACA_PV__Value": HistoryParameter[0][3],
+            # "Local_B1_TE1212_DACA_PV__Value": HistoryParameter[0][4], 
+            # "Local_B1_PT1061_DACA_PV__Value": HistoryParameter[0][5],
+            # "Local_B1_PT1071_DACA_PV__Value": HistoryParameter[0][6], 
+            # "Local_B1_PT1111_DACA_PV__Value": HistoryParameter[0][7],
+            # "Local_B1_PT1112_DACA_PV__Value": HistoryParameter[0][8], 
+            # "Local_B1_PT1211_DACA_PV__Value": HistoryParameter[0][9],
+            # "Local_B1_PT1212_DACA_PV__Value": HistoryParameter[0][10], 
+            # "Local_B1_TZ1131ZT_DACA_PV__Value": HistoryParameter[0][11],
+            # "Local_B1_S051AIT_DACA_PV__Value": HistoryParameter[0][12], 
+            # "Local_B1_AZ1011ZT_DACA_PV__Value": HistoryParameter[0][13],
+            # "Local_B1_S052AIT_DACA_PV__Value": HistoryParameter[0][14], 
+            # "Local_B1_S052AVFD_CRT_DACA_PV__Value": HistoryParameter[0][15],
+            # "Local_B1_S052AVFD_FB_DACA_PV__Value": HistoryParameter[0][16], 
+            # "Local_B1_PT1081_DACA_PV__Value": HistoryParameter[0][17],
+            # "Local_B1_PT1082_DACA_PV__Value": HistoryParameter[0][18], 
+            # "Local_B1_PT1091_DACA_PV__Value": HistoryParameter[0][19],
+            # "Local_B1_PT1092_DACA_PV__Value": HistoryParameter[0][20], 
+            # "Local_B1_TE1111_DACA_PV__Value": HistoryParameter[0][21],
+            # "Local_B1_TE1112_DACA_PV__Value": HistoryParameter[0][22], 
+            # "Local_B1_FT1151_DIVA_OUT__Value": float(HistoryParameter_CoalConsumption[0])
+            "Local_B1_Z_BEDT_DACA_PV__Value": row['B1_Z_BEDT_DACA_PV__Value'], 
+            "Local_B1_PT1281_DACA_PV__Value": row['B1_PT1281_DACA_PV__Value'],
+            "Local_B1_AT1011_DACA_PV__Value": row['B1_AT1011_DACA_PV__Value'],
+            "Local_B1_AT1012_DACA_PV__Value": row['B1_AT1012_DACA_PV__Value'],
+            "Local_B1_TE1212_DACA_PV__Value": row['B1_TE1212_DACA_PV__Value'],
+            "Local_B1_PT1061_DACA_PV__Value": row['B1_PT1061_DACA_PV__Value'],
+            "Local_B1_PT1071_DACA_PV__Value": row['B1_PT1071_DACA_PV__Value'], 
+            "Local_B1_PT1111_DACA_PV__Value": row['B1_PT1111_DACA_PV__Value'],
+            "Local_B1_PT1112_DACA_PV__Value": row['B1_PT1112_DACA_PV__Value'],
+            "Local_B1_PT1211_DACA_PV__Value": row['B1_PT1211_DACA_PV__Value'],
+            "Local_B1_PT1212_DACA_PV__Value": row['B1_PT1212_DACA_PV__Value'], 
+            "Local_B1_TZ1131ZT_DACA_PV__Value": row['B1_TZ1131ZT_DACA_PV__Value'],
+            "Local_B1_S051AIT_DACA_PV__Value": row['B1_S051AIT_DACA_PV__Value'],
+            "Local_B1_AZ1011ZT_DACA_PV__Value": row['B1_AZ1011ZT_DACA_PV__Value'],
+            "Local_B1_S052AIT_DACA_PV__Value": row['B1_S052AIT_DACA_PV__Value'],
+            "Local_B1_S052AVFD_CRT_DACA_PV__Value": row['B1_S052AVFD_CRT_DACA_PV__Value'],
+            "Local_B1_S052AVFD_FB_DACA_PV__Value": row['B1_S052AVFD_FB_DACA_PV__Value'],
+            "Local_B1_PT1081_DACA_PV__Value": row['B1_PT1081_DACA_PV__Value'],
+            "Local_B1_PT1082_DACA_PV__Value": row['B1_PT1082_DACA_PV__Value'],
+            "Local_B1_PT1091_DACA_PV__Value": row['B1_PT1091_DACA_PV__Value'],
+            "Local_B1_PT1092_DACA_PV__Value": row['B1_PT1092_DACA_PV__Value'],
+            "Local_B1_TE1111_DACA_PV__Value": row['B1_TE1111_DACA_PV__Value'],
+            "Local_B1_TE1112_DACA_PV__Value": row['B1_TE1112_DACA_PV__Value'],
+            "Local_B1_FT1151_DIVA_OUT__Value": row['B1_FT1151_DIVA_OUT__Value']
         }
         print(output)
 
@@ -194,7 +252,7 @@ def LH1_GenerateParameter(input, PG_cursor, PG_conn, model_LH1_GenerateParameter
             # Tạo chuỗi cột và placeholders cho câu lệnh INSERT
         placeholders = ', '.join(['%s'] * len(name_columns))
         columns = ', '.join([f'"{col}"' for col in name_columns])
-        values = [crontime] + [float(x) for x in input_stage1[0]] + [float(x) for x in OptimizerParameter] + [float(OptimizerParameter_CoalConsumption)] + [float(x) for x in HistoryParameter[0]] + [float(x) for x in HistoryParameter_CoalConsumption]
+        values = [crontime] + [float(x) for x in input_stage1[0]] + [float(x) for x in OptimizerParameter] + [float(OptimizerParameter_CoalConsumption)] + [float(x) for x in local_parameters] + [float(row['B1_FT1151_DIVA_OUT__Value'])]
         print(values)
         insert_query = f'''
             INSERT INTO "DATA_LH1_GenerateParameter" ({columns}) VALUES ({placeholders})
@@ -207,7 +265,7 @@ def LH1_GenerateParameter(input, PG_cursor, PG_conn, model_LH1_GenerateParameter
         print(f"An error occurred: {e}")
         return {"error": str(e)} 
 
-def LH2_GenerateParameter(input, PG_cursor, PG_conn, model_LH2_GenerateParameter, model_LH2_HistoryParameter, model_LH2_CoalConsumption):
+def LH2_GenerateParameter(input, PG_cursor, PG_conn, model_LH2_GenerateParameter):
     """
         1. Workflow:
             Tạo bộ thông số vận hành tối ưu và bộ thông số Local dựa trên dữ liệu từ API gửi về.
@@ -274,14 +332,47 @@ def LH2_GenerateParameter(input, PG_cursor, PG_conn, model_LH2_GenerateParameter
         # print('CoalConsumption:', OptimizerParameter_CoalConsumption)
 
         # Giai đoạn 5: Chạy model History để có bộ thông số phù hợp với tải và tính toán tiêu hao than dự kiến
-        HistoryParameter = model_LH2_HistoryParameter.predict(input_stage1)
-        input_HistoryParameter_coalconsumption = np.hstack((input_stage1, HistoryParameter))
-        HistoryParameter_CoalConsumption = model_LH2_CoalConsumption.predict(input_HistoryParameter_coalconsumption)
+        # HistoryParameter = model_LH2_HistoryParameter.predict(input_stage1)
+        # input_HistoryParameter_coalconsumption = np.hstack((input_stage1, HistoryParameter))
+        # HistoryParameter_CoalConsumption = model_LH2_CoalConsumption.predict(input_HistoryParameter_coalconsumption)
         # print("HistoryParameter:", HistoryParameter)
         # print("HistoryParameter_CoalConsumption:", HistoryParameter_CoalConsumption)
+        power = input_stage1[0][11]
+        df_baseparameter = pd.read_csv('../baseparameters/baseparameter_LH2.csv')
+        bins = df_baseparameter['power_bin'].unique()
+        # Tìm bin gần nhất với công suất hiện tại
+        nearest_bin = min(bins, key=lambda x: abs(x - power))
+        # Lấy bộ thông số tương ứng
+        row = df_baseparameter[df_baseparameter['power_bin'] == nearest_bin].iloc[0]
+        print("Selected base parameters row:", row)
 
         # Giai đoạn 6: Khởi tạo cấu trúc output dưới dạng json
         crontime = datetime.now().strftime('%Y-%m-%d %H:%M:00')
+        local_parameters = [
+            row['B2_Z_BEDT_DACA_PV__Value'],
+            row['B2_PT1281_DACA_PV__Value'],
+            row['B2_AT1011_DACA_PV__Value'],
+            row['B2_AT1012_DACA_PV__Value'],
+            row['B2_TE1212_DACA_PV__Value'],
+            row['B2_PT1061_DACA_PV__Value'],
+            row['B2_PT1071_DACA_PV__Value'],
+            row['B2_PT1111_DACA_PV__Value'],
+            row['B2_PT1112_DACA_PV__Value'],
+            row['B2_PT1211_DACA_PV__Value'],
+            row['B2_PT1212_DACA_PV__Value'],
+            row['B2_TZ1131ZT_DACA_PV__Value'],
+            row['B2_S051AIT_DACA_PV__Value'],
+            row['B2_AZ1011ZT_DACA_PV__Value'],
+            row['B2_S052AIT_DACA_PV__Value'],
+            row['B2_S052AVFD_CRT_DACA_PV__Value'],
+            row['B2_S052AVFD_FB_DACA_PV__Value'],
+            row['B2_PT1081_DACA_PV__Value'],
+            row['B2_PT1082_DACA_PV__Value'],
+            row['B2_PT1091_DACA_PV__Value'],
+            row['B2_PT1092_DACA_PV__Value'],
+            row['B2_TE1111_DACA_PV__Value'],
+            row['B2_TE1112_DACA_PV__Value']
+        ]
         output = {
             "CronTime": crontime,
             "LDA12080012000243": input_stage1[0][0], 
@@ -322,30 +413,54 @@ def LH2_GenerateParameter(input, PG_cursor, PG_conn, model_LH2_GenerateParameter
             "Global_B2_TE1111_DACA_PV__Value": OptimizerParameter[21],
             "Global_B2_TE1112_DACA_PV__Value": OptimizerParameter[22], 
             "Global_B2_FT1151_DIVA_OUT__Value": OptimizerParameter_CoalConsumption,
-            "Local_B2_Z_BEDT_DACA_PV__Value": HistoryParameter[0][0], 
-            "Local_B2_PT1281_DACA_PV__Value": HistoryParameter[0][1],
-            "Local_B2_AT1011_DACA_PV__Value": HistoryParameter[0][2], 
-            "Local_B2_AT1012_DACA_PV__Value": HistoryParameter[0][3],
-            "Local_B2_TE1212_DACA_PV__Value": HistoryParameter[0][4], 
-            "Local_B2_PT1061_DACA_PV__Value": HistoryParameter[0][5],
-            "Local_B2_PT1071_DACA_PV__Value": HistoryParameter[0][6], 
-            "Local_B2_PT1111_DACA_PV__Value": HistoryParameter[0][7],
-            "Local_B2_PT1112_DACA_PV__Value": HistoryParameter[0][8], 
-            "Local_B2_PT1211_DACA_PV__Value": HistoryParameter[0][9],
-            "Local_B2_PT1212_DACA_PV__Value": HistoryParameter[0][10], 
-            "Local_B2_TZ1131ZT_DACA_PV__Value": HistoryParameter[0][11],
-            "Local_B2_S051AIT_DACA_PV__Value": HistoryParameter[0][12], 
-            "Local_B2_AZ1011ZT_DACA_PV__Value": HistoryParameter[0][13],
-            "Local_B2_S052AIT_DACA_PV__Value": HistoryParameter[0][14], 
-            "Local_B2_S052AVFD_CRT_DACA_PV__Value": HistoryParameter[0][15],
-            "Local_B2_S052AVFD_FB_DACA_PV__Value": HistoryParameter[0][16], 
-            "Local_B2_PT1081_DACA_PV__Value": HistoryParameter[0][17],
-            "Local_B2_PT1082_DACA_PV__Value": HistoryParameter[0][18], 
-            "Local_B2_PT1091_DACA_PV__Value": HistoryParameter[0][19],
-            "Local_B2_PT1092_DACA_PV__Value": HistoryParameter[0][20], 
-            "Local_B2_TE1111_DACA_PV__Value": HistoryParameter[0][21],
-            "Local_B2_TE1112_DACA_PV__Value": HistoryParameter[0][22], 
-            "Local_B2_FT1151_DIVA_OUT__Value": float(HistoryParameter_CoalConsumption[0])
+            # "Local_B2_Z_BEDT_DACA_PV__Value": HistoryParameter[0][0], 
+            # "Local_B2_PT1281_DACA_PV__Value": HistoryParameter[0][1],
+            # "Local_B2_AT1011_DACA_PV__Value": HistoryParameter[0][2], 
+            # "Local_B2_AT1012_DACA_PV__Value": HistoryParameter[0][3],
+            # "Local_B2_TE1212_DACA_PV__Value": HistoryParameter[0][4], 
+            # "Local_B2_PT1061_DACA_PV__Value": HistoryParameter[0][5],
+            # "Local_B2_PT1071_DACA_PV__Value": HistoryParameter[0][6], 
+            # "Local_B2_PT1111_DACA_PV__Value": HistoryParameter[0][7],
+            # "Local_B2_PT1112_DACA_PV__Value": HistoryParameter[0][8], 
+            # "Local_B2_PT1211_DACA_PV__Value": HistoryParameter[0][9],
+            # "Local_B2_PT1212_DACA_PV__Value": HistoryParameter[0][10], 
+            # "Local_B2_TZ1131ZT_DACA_PV__Value": HistoryParameter[0][11],
+            # "Local_B2_S051AIT_DACA_PV__Value": HistoryParameter[0][12], 
+            # "Local_B2_AZ1011ZT_DACA_PV__Value": HistoryParameter[0][13],
+            # "Local_B2_S052AIT_DACA_PV__Value": HistoryParameter[0][14], 
+            # "Local_B2_S052AVFD_CRT_DACA_PV__Value": HistoryParameter[0][15],
+            # "Local_B2_S052AVFD_FB_DACA_PV__Value": HistoryParameter[0][16], 
+            # "Local_B2_PT1081_DACA_PV__Value": HistoryParameter[0][17],
+            # "Local_B2_PT1082_DACA_PV__Value": HistoryParameter[0][18], 
+            # "Local_B2_PT1091_DACA_PV__Value": HistoryParameter[0][19],
+            # "Local_B2_PT1092_DACA_PV__Value": HistoryParameter[0][20], 
+            # "Local_B2_TE1111_DACA_PV__Value": HistoryParameter[0][21],
+            # "Local_B2_TE1112_DACA_PV__Value": HistoryParameter[0][22], 
+            # "Local_B2_FT1151_DIVA_OUT__Value": float(HistoryParameter_CoalConsumption[0])
+            "Local_B2_Z_BEDT_DACA_PV__Value": row['B2_Z_BEDT_DACA_PV__Value'], 
+            "Local_B2_PT1281_DACA_PV__Value": row['B2_PT1281_DACA_PV__Value'],
+            "Local_B2_AT1011_DACA_PV__Value": row['B2_AT1011_DACA_PV__Value'],
+            "Local_B2_AT1012_DACA_PV__Value": row['B2_AT1012_DACA_PV__Value'],
+            "Local_B2_TE1212_DACA_PV__Value": row['B2_TE1212_DACA_PV__Value'],
+            "Local_B2_PT1061_DACA_PV__Value": row['B2_PT1061_DACA_PV__Value'],
+            "Local_B2_PT1071_DACA_PV__Value": row['B2_PT1071_DACA_PV__Value'], 
+            "Local_B2_PT1111_DACA_PV__Value": row['B2_PT1111_DACA_PV__Value'],
+            "Local_B2_PT1112_DACA_PV__Value": row['B2_PT1112_DACA_PV__Value'],
+            "Local_B2_PT1211_DACA_PV__Value": row['B2_PT1211_DACA_PV__Value'],
+            "Local_B2_PT1212_DACA_PV__Value": row['B2_PT1212_DACA_PV__Value'], 
+            "Local_B2_TZ1131ZT_DACA_PV__Value": row['B2_TZ1131ZT_DACA_PV__Value'],
+            "Local_B2_S051AIT_DACA_PV__Value": row['B2_S051AIT_DACA_PV__Value'],
+            "Local_B2_AZ1011ZT_DACA_PV__Value": row['B2_AZ1011ZT_DACA_PV__Value'],
+            "Local_B2_S052AIT_DACA_PV__Value": row['B2_S052AIT_DACA_PV__Value'],
+            "Local_B2_S052AVFD_CRT_DACA_PV__Value": row['B2_S052AVFD_CRT_DACA_PV__Value'],
+            "Local_B2_S052AVFD_FB_DACA_PV__Value": row['B2_S052AVFD_FB_DACA_PV__Value'],
+            "Local_B2_PT1081_DACA_PV__Value": row['B2_PT1081_DACA_PV__Value'],
+            "Local_B2_PT1082_DACA_PV__Value": row['B2_PT1082_DACA_PV__Value'],
+            "Local_B2_PT1091_DACA_PV__Value": row['B2_PT1091_DACA_PV__Value'],
+            "Local_B2_PT1092_DACA_PV__Value": row['B2_PT1092_DACA_PV__Value'],
+            "Local_B2_TE1111_DACA_PV__Value": row['B2_TE1111_DACA_PV__Value'],
+            "Local_B2_TE1112_DACA_PV__Value": row['B2_TE1112_DACA_PV__Value'],
+            "Local_B2_FT1151_DIVA_OUT__Value": row['B2_FT1151_DIVA_OUT__Value']
         }
         # print(output)
 
@@ -356,7 +471,8 @@ def LH2_GenerateParameter(input, PG_cursor, PG_conn, model_LH2_GenerateParameter
             # Tạo chuỗi cột và placeholders cho câu lệnh INSERT
         placeholders = ', '.join(['%s'] * len(name_columns))
         columns = ', '.join([f'"{col}"' for col in name_columns])
-        values = [crontime] + [float(x) for x in input_stage1[0]] + [float(x) for x in OptimizerParameter] + [float(OptimizerParameter_CoalConsumption)] + [float(x) for x in HistoryParameter[0]] + [float(x) for x in HistoryParameter_CoalConsumption]
+        # values = [crontime] + [float(x) for x in input_stage1[0]] + [float(x) for x in OptimizerParameter] + [float(OptimizerParameter_CoalConsumption)] + [float(x) for x in HistoryParameter[0]] + [float(x) for x in HistoryParameter_CoalConsumption]
+        values = [crontime] + [float(x) for x in input_stage1[0]] + [float(x) for x in OptimizerParameter] + [float(OptimizerParameter_CoalConsumption)] + [float(x) for x in local_parameters] + [float(row['B2_FT1151_DIVA_OUT__Value'])]
         # print(values)
         insert_query = f'''
             INSERT INTO "DATA_LH2_GenerateParameter" ({columns}) VALUES ({placeholders})
