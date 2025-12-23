@@ -8,9 +8,8 @@ def load_model(filename):
     model = pickle.load(open(filename, 'rb'))
     return model
 
-loaded_model = load_model('D:/001.Project/LDA_master/models/LH_Step2.sav')
-
-def objective_function(X):
+loaded_model_LH1 = load_model('D:/001.Project/LDA_master/models/LH1_ZML_2025.sav')
+def objective_function_LH1(X):
     """
         Hàm mục tiêu (objective function) được sử dụng để đánh giá một bộ tham số đầu vào X.  
         Hàm này dự đoán giá trị mục tiêu bằng mô hình đã được huấn luyện.
@@ -29,11 +28,31 @@ def objective_function(X):
     """
     X_sample = input_stage1
     input = np.concatenate((X_sample, X.reshape(1, -1)), axis=1)
-    # with open('D:/001.Project/LDA_master/autotrain/best/LH_modelOptimizerParameter_CoalConsumption_best.sav', 'rb') as file:
-    # with open('D:/001.Project/LDA_master/models/LH_Step2.sav', 'rb') as file:
-    #     loaded_model = pickle.load(file)
+    target = loaded_model_LH1.predict(input)
+    target = target.item()
+    return target
 
-    target = loaded_model.predict(input)
+loaded_model_LH2 = load_model('D:/001.Project/LDA_master/models/LH2_ZML_2025.sav')
+def objective_function_LH2(X):
+    """
+        Hàm mục tiêu (objective function) được sử dụng để đánh giá một bộ tham số đầu vào X.  
+        Hàm này dự đoán giá trị mục tiêu bằng mô hình đã được huấn luyện.
+
+        Tham số:
+            X (numpy.ndarray): Một mảng đầu vào chứa các tham số cần tối ưu hóa.
+
+        Quá trình thực hiện:
+            1. Ghép nối X với dữ liệu đầu vào `input_stage1` để tạo thành mảng đầu vào hoàn chỉnh.
+            2. Tải mô hình dự đoán từ tệp đã lưu.
+            3. Dự đoán giá trị mục tiêu bằng mô hình đã tải.
+            4. Trả về kết quả dự đoán dưới dạng một số duy nhất.
+
+        Trả về:
+            float: Giá trị dự đoán từ mô hình.
+    """
+    X_sample = input_stage1
+    input = np.concatenate((X_sample, X.reshape(1, -1)), axis=1)
+    target = loaded_model_LH2.predict(input)
     target = target.item()
     return target
 
@@ -288,7 +307,7 @@ def LH2_OptimizerParameter(PG_cursor, PG_conn, model_LH2_OptimizerParameter):
             # 'crossover_probability': 0.8, # Tăng xác suất lai ghép để đẩy mạnh sự kết hợp gen tốt
             'parents_portion': 0.5,       # Tăng tỷ lệ chọn làm cha mẹ để đảm bảo nhiều nguồn gen tốt được kết hợp
             'crossover_type': 'one_point', # Chuyển sang lai ghép điểm đơn để tăng tính đột phá khi kết hợp gen
-            'max_iteration_without_improv': 20, # Tăng ngưỡng dừng để tránh kết luận sớm khi mô hình chưa tối ưu
+            'max_iteration_without_improv': 30, # Tăng ngưỡng dừng để tránh kết luận sớm khi mô hình chưa tối ưu
         }
         model = ga(
             dimension=len(OptimizerParameter_Stage1[0]),
@@ -298,9 +317,9 @@ def LH2_OptimizerParameter(PG_cursor, PG_conn, model_LH2_OptimizerParameter):
         )
 
         # Giai đoạn 7: Chạy hàm GA để có bộ thông số tối ưu tốt nhất
-        model.run(function=objective_function, no_plot = True, disable_printing=True, progress_bar_stream=None)
+        model.run(function=objective_function_LH2, no_plot = True, disable_printing=True, progress_bar_stream=None)
         best_solution = model.result['variable']
-        best_fitness = model.result['score']
+        best_fitness = model.result['score']/(input_stage1[0][11] + 1e-10)
         # print(f"Best Parameters: {best_solution}")
         print(f"Best Fitness: {best_fitness}")
 
@@ -511,9 +530,9 @@ def LH1_OptimizerParameter(PG_cursor, PG_conn, model_LH1_OptimizerParameter):
         )
 
         # Giai đoạn 7: Chạy hàm GA để có bộ thông số tối ưu tốt nhất
-        model.run(function=objective_function, no_plot = True, disable_printing=True, progress_bar_stream=None)
+        model.run(function=objective_function_LH1, no_plot = True, disable_printing=True, progress_bar_stream=None)
         best_solution = model.result['variable']
-        best_fitness = model.result['score']
+        best_fitness = model.result['score']/(input_stage1[0][11] + 1e-10)
         # print(f"Best Parameters: {best_solution}")
         print(f"Best Fitness: {best_fitness}")
 

@@ -8,9 +8,8 @@ def load_model(filename):
     model = pickle.load(open(filename, 'rb'))
     return model
 
-loaded_model = load_model('D:/001.Project/LDA_master/models/LH_Step2.sav')
-
-def objective_function(X):
+loaded_model_LH1 = load_model('D:/001.Project/LDA_master/models/LH1_ZML_2025.sav')
+def objective_function_LH1(X):
     """
         Hàm mục tiêu (objective function) được sử dụng để đánh giá một bộ tham số đầu vào X.  
         Hàm này dự đoán giá trị mục tiêu bằng mô hình đã được huấn luyện.
@@ -27,20 +26,37 @@ def objective_function(X):
         Trả về:
             float: Giá trị dự đoán từ mô hình.
     """
-
-    # X_sample = input_stage1
-    # input = np.concatenate((X_sample, X.reshape(1, -1)), axis=1)
-    # # with open('D:/001.Project/LDA_master/autotrain/best/LH_modelOptimizerParameter_CoalConsumption_best.sav', 'rb') as file:
-    # # with open('D:/001.Project/LDA_master/models/LH_Step2.sav', 'rb') as file:
-    # #     loaded_model = pickle.load(file)
-    # target = loaded_model.predict(input)
-    # target = target.item()
-    # return target
-
     try:
         X_sample = input_stage1
         input_data = np.concatenate((X_sample, X.reshape(1, -1)), axis=1)
-        target = loaded_model.predict(input_data)
+        target = loaded_model_LH1.predict(input_data)
+        return float(target.item())
+    except Exception as e:
+        print(f"[Penalty] Invalid parameters {X}: {e}")
+        return 1e6  
+
+loaded_model_LH2 = load_model('D:/001.Project/LDA_master/models/LH2_ZML_2025.sav')
+def objective_function_LH2(X):
+    """
+        Hàm mục tiêu (objective function) được sử dụng để đánh giá một bộ tham số đầu vào X.  
+        Hàm này dự đoán giá trị mục tiêu bằng mô hình đã được huấn luyện.
+
+        Tham số:
+            X (numpy.ndarray): Một mảng đầu vào chứa các tham số cần tối ưu hóa.
+
+        Quá trình thực hiện:
+            1. Ghép nối X với dữ liệu đầu vào `input_stage1` để tạo thành mảng đầu vào hoàn chỉnh.
+            2. Tải mô hình dự đoán từ tệp đã lưu.
+            3. Dự đoán giá trị mục tiêu bằng mô hình đã tải.
+            4. Trả về kết quả dự đoán dưới dạng một số duy nhất.
+
+        Trả về:
+            float: Giá trị dự đoán từ mô hình.
+    """
+    try:
+        X_sample = input_stage1
+        input_data = np.concatenate((X_sample, X.reshape(1, -1)), axis=1)
+        target = loaded_model_LH2.predict(input_data)
         return float(target.item())
     except Exception as e:
         print(f"[Penalty] Invalid parameters {X}: {e}")
@@ -96,7 +112,7 @@ def LH1_GenerateParameter(input, PG_cursor, PG_conn, model_LH1_GenerateParameter
             # 'crossover_probability': 0.8, # Tăng xác suất lai ghép để đẩy mạnh sự kết hợp gen tốt
             'parents_portion': 0.5,       # Tăng tỷ lệ chọn làm cha mẹ để đảm bảo nhiều nguồn gen tốt được kết hợp
             'crossover_type': 'one_point', # Chuyển sang lai ghép điểm đơn để tăng tính đột phá khi kết hợp gen
-            'max_iteration_without_improv': 1, # Tăng ngưỡng dừng để tránh kết luận sớm khi mô hình chưa tối ưu
+            'max_iteration_without_improv': 50, # Tăng ngưỡng dừng để tránh kết luận sớm khi mô hình chưa tối ưu
         }
         model = ga(
             dimension=len(GenerateParameter[0]),
@@ -106,9 +122,9 @@ def LH1_GenerateParameter(input, PG_cursor, PG_conn, model_LH1_GenerateParameter
         )
 
         # Giai đoạn 4: Chạy hàm GA để có bộ thông số tối ưu tốt nhất
-        model.run(function=objective_function, no_plot = True, disable_printing=True)
+        model.run(function=objective_function_LH1, no_plot = True, disable_printing=True)
         OptimizerParameter = model.result['variable']
-        OptimizerParameter_CoalConsumption = model.result['score']
+        OptimizerParameter_CoalConsumption = model.result['score']/(input_stage1[0][11] + 1e-10)
         print('OptimizerParameter:', OptimizerParameter)
         print('CoalConsumption:', OptimizerParameter_CoalConsumption)
 
@@ -325,9 +341,9 @@ def LH2_GenerateParameter(input, PG_cursor, PG_conn, model_LH2_GenerateParameter
         )
 
         # Giai đoạn 4: Chạy hàm GA để có bộ thông số tối ưu tốt nhất
-        model.run(function=objective_function, no_plot = True, disable_printing=True)
+        model.run(function=objective_function_LH2, no_plot = True, disable_printing=True)
         OptimizerParameter = model.result['variable']
-        OptimizerParameter_CoalConsumption = model.result['score']
+        OptimizerParameter_CoalConsumption = model.result['score']/(input_stage1[0][11] + 1e-10)
         # print('OptimizerParameter:', OptimizerParameter)
         # print('CoalConsumption:', OptimizerParameter_CoalConsumption)
 
